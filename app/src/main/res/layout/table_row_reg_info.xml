@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:focusable="true" >
+    <TextView
+        android:id="@+id/tc_blc_id"
+        android:layout_width="wrap_content"
+        android:layout_column="0"
+        android:layout_weight="1"
+        android:background="@drawable/bg_table_item"
+        android:textColor="@color/primary_text"  />
+
+    <TextView
+        android:id="@+id/tc_range"
+        android:layout_width="wrap_content"
+        android:layout_column="1"
+        android:layout_weight="1"
+        android:background="@drawable/bg_table_item"
+        android:textColor="@color/primary_text"  />
+
+    <TextView
+        android:id="@+id/tc_reg"
+        android:layout_width="wrap_content"
+        android:layout_column="2"
+        android:layout_weight="1"
+        android:background="@drawable/bg_table_item"
+        android:textColor="@color/primary_text"  />
+
+    <TextView
+        android:id="@+id/tc_vote"
+        android:layout_width="wrap_content"
+        android:layout_column="3"
+        android:layout_weight="1"
+        android:background="@drawable/bg_table_item"
+        android:textColor="@color/primary_text"  />
+    <TextView
+        android:id="@+id/tc_pub"
+        android:layout_width="wrap_content"
+        android:layout_column="4"
+        android:layout_weight="1"
+        android:background="@drawable/bg_table_item"
+        android:textColor="@color/primary_text"  />
+</TableRow>

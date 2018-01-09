@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:id="@+id/l_reg_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+
+        <TableLayout
+            android:id="@+id/details_table"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TableRow>
+                <TextView
+                    android:text="BlockID"
+                    android:layout_width="wrap_content"
+                    android:layout_column="0"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/bg_table_header"
+                    android:textColor="@color/material_black"  />
+                <TextView
+                    android:text="Scope"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:background="@drawable/bg_table_header"
+                    android:layout_column="1"
+                    android:layout_weight="1"
+                    android:textColor="@color/material_black"  />
+                <TextView
+                    android:text="Registration"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:background="@drawable/bg_table_header"
+                    android:layout_column="2"
+                    android:layout_weight="1"
+                    android:textColor="@color/material_black" />
+                <TextView
+                    android:text="Vote"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:background="@drawable/bg_table_header"
+                    android:layout_column="3"
+                    android:layout_weight="1"
+
+                    android:textColor="@color/material_black" />
+                <TextView
+                    android:text="Publish"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:background="@drawable/bg_table_header"
+                    android:layout_column="4"
+                    android:layout_weight="1"
+
+                    android:textColor="@color/material_black" />
+            </TableRow>
+
+        </TableLayout>
+    </LinearLayout>
+</RelativeLayout>
