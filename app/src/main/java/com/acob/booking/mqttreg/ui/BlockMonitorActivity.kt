@@ -2,19 +2,23 @@ package com.acob.booking.mqttreg.ui
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.ContentValues.TAG
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.format.DateUtils
 import android.util.Log
-import android.widget.TableRow
-import android.widget.TextView
+import android.view.View
+import android.widget.*
 import com.acob.booking.mqttreg.R
 import com.acob.booking.mqttreg.timing.TimeInfo
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_regiser_info.*
 import kotlinx.android.synthetic.main.table_row_reg_info.view.*
 import java.util.*
+import com.acob.booking.mqttreg.R.id.details_table
+import kotlinx.android.synthetic.main.activity_block_monitor.*
+
 
 class BlockMonitorActivity : AppCompatActivity() {
     val TAG = "BLOCK MONI"
@@ -25,6 +29,9 @@ class BlockMonitorActivity : AppCompatActivity() {
     var cdReg :CDTBlock? = null
     var cdVote :CDTBlock? = null
     var cdPub :CDTBlock? = null
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -34,28 +41,46 @@ class BlockMonitorActivity : AppCompatActivity() {
 
         //addRows()
         //deleteRow ("1 1")
+        viewModel.initialData()
+
+        val dataAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, viewModel.eventList.value)
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // attaching data adapter to spinner
+        spinner_event.adapter = dataAdapter
+        spinner_event.onItemSelectedListener = ItemSelectedListner()
+        spinner_event.setSelection(viewModel.setSelectionEvent())
+
+        val dataAdapterUser = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, viewModel.userList.value)
+        // Drop down layout style - list view with radio button
+        dataAdapterUser.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // attaching data adapter to spinner
+        spinner_user.adapter = dataAdapterUser
+        spinner_user.onItemSelectedListener = ItemSelectedListner()
+        spinner_user.setSelection(viewModel.setSelectionUser())
+
+
+     /*   viewModel.getSelectedEvent().observe(this,Observer<String>{
+            item ->
+            run {
+                Log.d(TAG, "Selected Item: " + item)
+                var idx = viewModel.eventList.value?.indexOf(item)
+                if (idx!! >=0) {
+                        spinner_event.setSelection(idx)
+                }
+            }
+        })*/
 
 
     }
+
+
+
     override fun onStart() {
         super.onStart()
-        var ld = viewModel.getList()
-        var timeList = ld.value
-        // when first time the app start
-        if (timeList ==null){
-            var now = Calendar.getInstance().time
-            //get current Time Info
-           var currentTimeInfo = TimeInfo(now)
-            //get previous TimeInfo
-            var lastTimeInfo = TimeInfo(Date(currentTimeInfo.date.time-currentTimeInfo.registerInterval))
-            lastTimeInfo.setStatus(now)
 
-            //set current TimeInfo
-            viewModel.insertTimeInfo(lastTimeInfo)
-                    .insertTimeInfo(currentTimeInfo)
-                    .updateLiveData()
-        }
-
+//set up timer header table
+        viewModel.initialDisplay()
         viewModel.getList().observe(this,  Observer<List<TimeInfo>>{
             list ->
             run {
@@ -65,22 +90,9 @@ class BlockMonitorActivity : AppCompatActivity() {
             }
         })
 
-    }
-    private fun deleteRow(blcNo: String) {
-        var rowCount = details_table.childCount
-        lateinit var tr : TableRow
-        for (i in 1 until rowCount) {
-            tr = details_table.getChildAt(i) as TableRow
-            var v = tr.tc_blc_id.text.toString()
-            Log.d(TAG,v)
-            if (v == blcNo) {
-                break
-            }
-        }
-        if (tr!=null) {
-            details_table.removeView(tr)
-        }
-    }
+}
+
+
 
     private fun clearCDT(){
         if (cdReg !=null) {
@@ -157,44 +169,35 @@ class BlockMonitorActivity : AppCompatActivity() {
         }
 
     }
-    fun endAction(tvid:Int,timeInfo:TimeInfo){
 
-        when (tvid){
-            R.id.tc_reg -> {
-                var timeInfoNew = TimeInfo(Calendar.getInstance().time)
-
-                timeInfo.currentStatus= timeInfo.STATUS_REGISTER_END
-                viewModel.insertTimeInfo(timeInfoNew)
-                Log.d(TAG," TC Reg End")
-
-            }
-            R.id.tc_vote -> {
-                timeInfo.currentStatus= timeInfo.STATUS_VOTING_START
-                Log.d(TAG,"TC Vote Start" )
-
-            }
-            R.id.tc_pub -> {
-                timeInfo.currentStatus= timeInfo.STATUS_PUB_BLOCK_START
-                Log.d(TAG,"TC Pub Start" )
-            }
-
-        }
-        viewModel.updateTimeInfo(timeInfo).updateLiveData()
-    }
 
     inner class CDTBlock(cdTarget:Long,cdInterval:Long,timeInfoNow:TimeInfo,tv:TextView):  CountDownTimer(cdTarget,cdInterval) {
         var timeInfoNow = timeInfoNow
         var tv = tv
-        var currentCycle = timeInfoNow.getCurrentCycle()
+
         override fun onTick(millisUntilFinished: Long) {
             var cdTime = DateUtils.formatElapsedTime(millisUntilFinished / 1000)
             tv.setText("$cdTime")
         }
 
         override fun onFinish() {
-            endAction(tv.id,timeInfoNow)
+            viewModel.endAction(tv.id,timeInfoNow)
 //            newCycle()
 //            startCDDecide(timeInfoNow)
         }
     }
+    inner class ItemSelectedListner : AdapterView.OnItemSelectedListener{
+
+        override fun onItemSelected(parent: AdapterView<*>, v: View?, position: Int,
+                                    id: Long) {
+            if (position >=0) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                viewModel.setSelectedValue(parent.id, selectedItem)
+            }
+        }
+        override fun onNothingSelected(arg0: AdapterView<*>) {
+           // viewModel.setSelectedValue(parent.id,selectedItem)
+        }
+    }
+
 }
