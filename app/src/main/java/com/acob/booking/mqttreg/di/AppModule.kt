@@ -1,9 +1,12 @@
 package com.acob.booking.mqttreg.di
 
 import android.app.Application
+import android.arch.persistence.room.Room
 import android.content.Context
+import com.acob.booking.mqttreg.data.AppDB
 import com.acob.booking.mqttreg.data.LocalStorage
 import com.acob.booking.mqttreg.data.SharedPrefStorage
+import com.acob.booking.mqttreg.message.MessageProcesserDB
 import com.acob.booking.mqttreg.message.MessageProcessor
 import com.acob.booking.mqttreg.message.MqttManager
 import com.acob.booking.mqttreg.timing.TimeProcessor
@@ -28,7 +31,7 @@ class AppModule(private val context: Context) {
 
 
 
-    @Provides
+     @Provides
     fun providesAppContext() = context
 
     fun AppModule(application: Application) {
@@ -46,6 +49,7 @@ class AppModule(private val context: Context) {
     }
 
 
+/*
     @Provides
     @Singleton
     fun providesMessageProcessor(
@@ -53,6 +57,13 @@ class AppModule(private val context: Context) {
             localStorage: LocalStorage,
             mqttManager: MqttManager
     ) = MessageProcessor(context,gson,localStorage,mqttManager)
+*/
+
+    @Provides
+    @Singleton
+    fun providesMessageProcessor(database:AppDB
+    ) = MessageProcesserDB(database.obRegisterDao())
+
 
     @Provides
     fun providesMqttManager() = MqttManager()
@@ -76,6 +87,20 @@ class AppModule(private val context: Context) {
     @Provides
     @Singleton
     fun providesTimeProcessor (gson:Gson,localStorage:LocalStorage) = TimeProcessor(context,gson,localStorage)
+
+    //DB
+    @Provides
+    @Singleton
+    fun providesAppDatabase(context: Context): AppDB =
+            Room.databaseBuilder(context, AppDB::class.java, "acoregiser-db")
+                    .fallbackToDestructiveMigration()
+                    .build()
+
+    @Provides
+    @Singleton
+    fun providesOBReigisterDao(database: AppDB) = database.obRegisterDao()
+
+
 
 
 }

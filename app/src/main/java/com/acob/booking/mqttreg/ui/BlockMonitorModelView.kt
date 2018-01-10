@@ -8,15 +8,33 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.acob.booking.mqttreg.R
 import com.acob.booking.mqttreg.R.id.spinner_event
+import com.acob.booking.mqttreg.data.LocalStorage
+import com.acob.booking.mqttreg.data.model.OBRegister
+import com.acob.booking.mqttreg.message.MessageProcesserDB
+import com.google.gson.Gson
 import java.util.*
 import java.util.stream.Collectors.toList
+import javax.inject.Inject
 import kotlin.collections.ArrayList
+import android.text.method.TextKeyListener.clear
+import com.acob.booking.mqttreg.rx.SchedulersFacade
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers.io
+import android.os.AsyncTask.execute
+import io.reactivex.Observable
 
 
 /**
  * Created by wugang00 on 7/01/2018.
  */
-class BlockMonitorModelView: ViewModel() {
+class BlockMonitorModelView @Inject constructor(messageProcesser: MessageProcesserDB, gson: Gson,localStorage: LocalStorage,schedulersFacade:SchedulersFacade ) :ViewModel() {
+
+    var  messageProcessor  = messageProcesser
+    var gson = gson
+    var localStorage = localStorage
+    var schedulersFacade = schedulersFacade
+
+    private val disposables = CompositeDisposable()
 
     private var list = ArrayList<TimeInfo>()
     private var timeInfoList: MutableLiveData<ArrayList<TimeInfo>> = MutableLiveData<ArrayList<TimeInfo>>()
@@ -25,16 +43,22 @@ class BlockMonitorModelView: ViewModel() {
     var eventList:MutableLiveData<ArrayList<String>> = MutableLiveData<ArrayList<String>>()
     var userList:MutableLiveData<ArrayList<String>> = MutableLiveData<ArrayList<String>>()
 
+
+    override fun onCleared() {
+        disposables.clear()
+    }
     fun initialData() {
         eventList.value = arrayListOf(
-                "Party",
+
                 "Football",
+                "Party",
                 "BBQ",
                 "Learning"
         )
         userList.value = arrayListOf(
-                "Phily",
+
                 "Mason",
+                "Phily",
                 "Luke",
                 "Will",
                 "Kevin",
@@ -74,12 +98,6 @@ class BlockMonitorModelView: ViewModel() {
     fun updateLiveData():BlockMonitorModelView{
         timeInfoList.value  = list
         return this
-    }
-    fun getSelectedEvent():LiveData<String>{
-        return selectedEvent
-    }
-    fun setSelectedEvent(event:String) {
-        selectedEvent.value = event
     }
 
     fun initialDisplay() {
@@ -128,7 +146,7 @@ class BlockMonitorModelView: ViewModel() {
             R.id.spinner_event -> {
                 selectedEvent.value = selectedItem
             }
-            R.id.spinner_event -> {
+            R.id.spinner_user -> {
                 selectedUser.value = selectedItem
             }
         }
@@ -150,5 +168,43 @@ class BlockMonitorModelView: ViewModel() {
         return setSelection(selectedUser.value, userList.value)
 
     }
+
+    fun doRegister():Boolean {
+        var success = false
+        var now = Calendar.getInstance().time
+        var blockId  = timeInfoList.value!!.last().getCurrentCycle()
+        var o = OBRegister(
+                blockId,
+                selectedEvent.value!!,
+                selectedUser.value!!,
+                "Pending",
+                now
+
+        )
+
+        success = disposables.add(
+
+                        Observable.fromCallable(
+                                {
+                                    messageProcessor.messagePublish(messageProcessor.msgTopicRegisterPrefix,o,messageProcessor.msgQos)
+                                    o
+                                })
+
+                .subscribeOn(schedulersFacade.io())
+                .observeOn(schedulersFacade.ui())
+                .subscribe(
+                        { obj ->
+                            run {
+                                Log.d(TAG,"insert done ${obj.evtId}"
+
+                                )
+                            } },
+                        { throwable -> run {throwable.printStackTrace()} }
+                )
+        )
+
+        return success
+    }
+
 
 }

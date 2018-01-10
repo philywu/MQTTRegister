@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.table_row_reg_info.view.*
 import java.util.*
 import com.acob.booking.mqttreg.R.id.details_table
 import kotlinx.android.synthetic.main.activity_block_monitor.*
+import javax.inject.Inject
 
 
 class BlockMonitorActivity : AppCompatActivity() {
@@ -26,6 +27,7 @@ class BlockMonitorActivity : AppCompatActivity() {
     val CELL_CLOSE = "Close"
     val CELL_PENDING = "Pending"
     lateinit var viewModel:BlockMonitorModelView
+    lateinit @Inject var viewModelFactory :CommonViewModelFactory
     var cdReg :CDTBlock? = null
     var cdVote :CDTBlock? = null
     var cdPub :CDTBlock? = null
@@ -37,7 +39,7 @@ class BlockMonitorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_block_monitor)
 
-        viewModel = ViewModelProviders.of(this).get(BlockMonitorModelView::class.java)
+        viewModel = ViewModelProviders.of(this,viewModelFactory).get(BlockMonitorModelView::class.java)
 
         //addRows()
         //deleteRow ("1 1")
@@ -60,6 +62,14 @@ class BlockMonitorActivity : AppCompatActivity() {
         spinner_user.adapter = dataAdapterUser
         spinner_user.onItemSelectedListener = itemSelectLisenter
         spinner_user.setSelection(viewModel.setSelectionUser())
+
+        btn_register.setOnClickListener({
+           if( viewModel.doRegister()) {
+               Toast.makeText(this,"Register Successfully",Toast.LENGTH_SHORT)
+           } else {
+               Toast.makeText(this,"Register Failed",Toast.LENGTH_SHORT)
+           }
+        })
 
 
      /*   viewModel.getSelectedEvent().observe(this,Observer<String>{
