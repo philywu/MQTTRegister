@@ -43,12 +43,14 @@ class BlockMonitorActivity : AppCompatActivity() {
         //deleteRow ("1 1")
         viewModel.initialData()
 
+        var itemSelectLisenter = ItemSelectedListner()
+
         val dataAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, viewModel.eventList.value)
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // attaching data adapter to spinner
         spinner_event.adapter = dataAdapter
-        spinner_event.onItemSelectedListener = ItemSelectedListner()
+        spinner_event.onItemSelectedListener = itemSelectLisenter
         spinner_event.setSelection(viewModel.setSelectionEvent())
 
         val dataAdapterUser = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, viewModel.userList.value)
@@ -56,7 +58,7 @@ class BlockMonitorActivity : AppCompatActivity() {
         dataAdapterUser.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // attaching data adapter to spinner
         spinner_user.adapter = dataAdapterUser
-        spinner_user.onItemSelectedListener = ItemSelectedListner()
+        spinner_user.onItemSelectedListener = itemSelectLisenter
         spinner_user.setSelection(viewModel.setSelectionUser())
 
 
@@ -192,11 +194,12 @@ class BlockMonitorActivity : AppCompatActivity() {
                                     id: Long) {
             if (position >=0) {
                 val selectedItem = parent.getItemAtPosition(position).toString()
+                Log.d(TAG,"ID:${parent.id} Selected: $selectedItem" )
                 viewModel.setSelectedValue(parent.id, selectedItem)
             }
         }
         override fun onNothingSelected(arg0: AdapterView<*>) {
-           // viewModel.setSelectedValue(parent.id,selectedItem)
+
         }
     }
 
