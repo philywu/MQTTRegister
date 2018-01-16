@@ -12,24 +12,32 @@ import javax.inject.Inject
  */
 class SchedulersFacade @Inject constructor() {
 
-    /**
-     * IO thread pool scheduler
-     */
-    fun io(): Scheduler {
-        return Schedulers.io()
-    }
 
-    /**
-     * Computation thread pool scheduler
-     */
-    fun computation(): Scheduler {
-        return Schedulers.computation()
-    }
 
-    /**
-     * Main Thread scheduler
-     */
-    fun ui(): Scheduler {
-        return AndroidSchedulers.mainThread()
+    companion object  {
+
+        /**
+         * IO thread pool scheduler
+         */
+        @JvmStatic
+        fun io(): Scheduler {
+            return Schedulers.io()
+        }
+
+        /**
+         * Computation thread pool scheduler
+         */
+        @JvmStatic
+        fun computation(): Scheduler {
+            return Schedulers.computation()
+        }
+
+        /**
+         * Main Thread scheduler
+         */
+        @JvmStatic
+        fun ui(): Scheduler {
+            return AndroidSchedulers.mainThread()
+        }
     }
 }

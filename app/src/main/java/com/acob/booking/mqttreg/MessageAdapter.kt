@@ -25,7 +25,7 @@ class MessageAdapter(private val activity: Activity, resource: Int, private val 
         val viewType = getItemViewType(position)
         var bubbleMessage = ""
         if (currentUser != obMsg.sender) {
-            layoutResource = R.layout.left_chat_bubble
+            layoutResource = R.layout.monitor_list_item
             bubbleMessage = "${obMsg.sender}: "
         } else {
             layoutResource = R.layout.right_chat_bubble

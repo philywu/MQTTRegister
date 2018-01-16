@@ -12,3 +12,11 @@ const val TIME_REGISTER_DELAY = 1L //  Minutes
 const val TIME_VOTE_INTERVAL = 1L //  Minutes
 const val TIME_VOTE_DELAY = 1L //  Minutes
 
+const val MSG_TYPE_REGISTER = "REGISTER"
+const val MSG_TYPE_TIMER = "TIMER"
+const val MSG_TYPE_VOTE = "VOTE"
+const val MSG_TYPE_PUBLISH = "PUBLISH"
+
+
+
+

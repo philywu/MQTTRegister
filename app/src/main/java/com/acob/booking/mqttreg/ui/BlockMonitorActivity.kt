@@ -2,21 +2,21 @@ package com.acob.booking.mqttreg.ui
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.ContentValues.TAG
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.support.v7.widget.LinearLayoutManager
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.widget.*
 import com.acob.booking.mqttreg.R
+import com.acob.booking.mqttreg.data.OBMessage
 import com.acob.booking.mqttreg.timing.TimeInfo
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_regiser_info.*
 import kotlinx.android.synthetic.main.table_row_reg_info.view.*
 import java.util.*
-import com.acob.booking.mqttreg.R.id.details_table
 import kotlinx.android.synthetic.main.activity_block_monitor.*
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ class BlockMonitorActivity : AppCompatActivity() {
     val CELL_CLOSE = "Close"
     val CELL_PENDING = "Pending"
     lateinit var viewModel:BlockMonitorModelView
-    lateinit @Inject var viewModelFactory :CommonViewModelFactory
+    lateinit @Inject var viewModelFactory : RegisterViewModelFactory
     var cdReg :CDTBlock? = null
     var cdVote :CDTBlock? = null
     var cdPub :CDTBlock? = null
@@ -43,7 +43,8 @@ class BlockMonitorActivity : AppCompatActivity() {
 
         //addRows()
         //deleteRow ("1 1")
-        viewModel.initialData()
+        var appStartTime = Calendar.getInstance().time
+        viewModel.initialData(appStartTime)
 
         var itemSelectLisenter = ItemSelectedListner()
 
@@ -70,18 +71,27 @@ class BlockMonitorActivity : AppCompatActivity() {
                Toast.makeText(this,"Register Failed",Toast.LENGTH_SHORT)
            }
         })
+        monitor_list.hasFixedSize()
 
 
-     /*   viewModel.getSelectedEvent().observe(this,Observer<String>{
-            item ->
+        monitor_list.adapter = BlockMonitorListAdaptor(this, viewModel.monitorList.value!!)
+        monitor_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        viewModel.showRegister(appStartTime)
+
+        viewModel.monitorList.observe(this, Observer<ArrayList<OBMessage>>{
+            list ->
             run {
-                Log.d(TAG, "Selected Item: " + item)
-                var idx = viewModel.eventList.value?.indexOf(item)
-                if (idx!! >=0) {
-                        spinner_event.setSelection(idx)
+                Log.d(TAG, "recyle list add here" + list?.size)
+                if (list != null && list.size>0) {
+                    var pos = list.size -1
+                    monitor_list.adapter.notifyItemInserted(pos)
+                    monitor_list.smoothScrollToPosition(pos)
                 }
             }
-        })*/
+        }
+
+        )
 
 
     }
@@ -102,7 +112,9 @@ class BlockMonitorActivity : AppCompatActivity() {
             }
         })
 
-}
+
+
+    }
 
 
 

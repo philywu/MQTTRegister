@@ -4,7 +4,9 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import com.acob.booking.mqttreg.data.dao.OBRegisterDao
+import com.acob.booking.mqttreg.data.dao.OBVoteDao
 import com.acob.booking.mqttreg.data.model.OBRegister
+import com.acob.booking.mqttreg.data.model.OBVote
 import com.acob.booking.mqttreg.data.util.DateConverter
 
 
@@ -15,14 +17,16 @@ import com.acob.booking.mqttreg.data.util.DateConverter
 
 @Database(entities = arrayOf(
 
-        OBRegister::class
+        OBRegister::class,
+        OBVote::class
 
-), version = 4, exportSchema = false)
+), version = 5, exportSchema = false)
 
 @TypeConverters( DateConverter::class)
 abstract class AppDB : RoomDatabase() {
 
     abstract fun obRegisterDao(): OBRegisterDao
+    abstract fun obVoteDao() : OBVoteDao
 
 }
 

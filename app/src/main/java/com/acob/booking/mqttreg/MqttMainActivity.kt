@@ -70,7 +70,7 @@ class MqttMainActivity : AppCompatActivity () {
         msgProcessor.messageList.clear()
 
         listView = list_msg
-        adapter = MessageAdapter(this, R.layout.left_chat_bubble, msgList!!,user);
+        adapter = MessageAdapter(this, R.layout.monitor_list_item, msgList!!,user);
         listView.setAdapter(adapter);
 
 

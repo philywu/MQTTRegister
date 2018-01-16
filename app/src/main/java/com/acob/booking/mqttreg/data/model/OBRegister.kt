@@ -19,4 +19,8 @@ data class OBRegister(
 ) {
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true) var id: Long = 0
+
+    override  fun toString(): String {
+        return String.format("%s|%s|%s", blockId,evtId,userName)
+    }
 }

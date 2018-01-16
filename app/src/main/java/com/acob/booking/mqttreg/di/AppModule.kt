@@ -6,9 +6,14 @@ import android.content.Context
 import com.acob.booking.mqttreg.data.AppDB
 import com.acob.booking.mqttreg.data.LocalStorage
 import com.acob.booking.mqttreg.data.SharedPrefStorage
+import com.acob.booking.mqttreg.data.dao.OBRegisterDao
+import com.acob.booking.mqttreg.data.dao.OBVoteDao
 import com.acob.booking.mqttreg.message.MessageProcesserDB
 import com.acob.booking.mqttreg.message.MessageProcessor
 import com.acob.booking.mqttreg.message.MqttManager
+import com.acob.booking.mqttreg.repository.IRegisterRepository
+import com.acob.booking.mqttreg.repository.RegisterRepositoryDB
+import com.acob.booking.mqttreg.rx.SchedulersFacade
 import com.acob.booking.mqttreg.timing.TimeProcessor
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
@@ -98,9 +103,19 @@ class AppModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun providesOBReigisterDao(database: AppDB) = database.obRegisterDao()
+    fun providesScheduleFacade() = SchedulersFacade()
 
+    @Provides
+    @Singleton
+    fun providesOBRegisterDao(database: AppDB) = database.obRegisterDao()
 
+    @Provides
+    @Singleton
+    fun providesOBVoteDao(database: AppDB) = database.obVoteDao()
+
+    @Provides
+    @Singleton
+    fun providesRegisterRepository(regiseterDao:OBRegisterDao,voteDao:OBVoteDao):IRegisterRepository = RegisterRepositoryDB(regiseterDao,voteDao)
 
 
 }

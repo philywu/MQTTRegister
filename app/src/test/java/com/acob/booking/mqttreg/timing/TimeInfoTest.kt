@@ -9,7 +9,7 @@ import java.util.*
 class TimeInfoTest {
     @Test
     fun testCreate() {
-        var timeInfo = TimeInfo(Calendar.getInstance())
+        var timeInfo = TimeInfo(Calendar.getInstance().time)
         var d = timeInfo.voteStartTime
         println(d)
     }
@@ -17,7 +17,7 @@ class TimeInfoTest {
     fun testGetCurrentCycle() {
         var c = Calendar.getInstance()
 
-        var timeInfo = TimeInfo(c)
+        var timeInfo = TimeInfo(c.time)
        // var c1 = Calendar.getInstance()
         println(timeInfo.getCurrentCycle())
        // println("${c1.time.time} vs ${timeInfo.date.time}")

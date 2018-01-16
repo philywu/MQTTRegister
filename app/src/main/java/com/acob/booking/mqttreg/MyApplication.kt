@@ -5,6 +5,7 @@ import android.app.Application
 import com.acob.booking.mqttreg.di.AppComponent
 import com.acob.booking.mqttreg.di.AppModule
 import com.acob.booking.mqttreg.di.DaggerAppComponent
+import com.acob.booking.mqttreg.rx.SchedulersFacade
 
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -20,6 +21,7 @@ class MyApplication : Application(), HasActivityInjector {
 
     lateinit var appComponent: AppComponent
 
+    var scheduleFacade :SchedulersFacade = SchedulersFacade()
 
     override fun onCreate() {
         super.onCreate()
